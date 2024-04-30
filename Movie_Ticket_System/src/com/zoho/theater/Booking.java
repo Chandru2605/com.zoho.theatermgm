@@ -48,7 +48,7 @@ public class Booking {
         int amount = getAmount(showSeatIDs);
         Timestamp date = new Timestamp(new Date().getTime());
         long fDate = date.getTime();
-        String query1 = "insert into Booking(NoOfSeatsBooked,BookingDate,Amount,ShowID) values("+showSeatIDs.size()+","+fDate+","+amount+","+showID+")";
+        String query1 = "insert into Booking(NoOfSeats,Date,Amount,ShowID,`Option`) values("+showSeatIDs.size()+","+fDate+","+amount+","+showID+","+1+")";
         ConnectionUtil.insertQuery(query1);
         int bookingID = getLatestBookingID();
         for(Integer i:showSeatIDs){

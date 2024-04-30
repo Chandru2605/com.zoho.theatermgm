@@ -5,7 +5,7 @@ import com.zoho.theater.connection.ConnectionUtil;
 import java.sql.ResultSet;
 import java.util.Scanner;
 
-public class AdminAPI {
+public class CustomerAPI {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args) throws Exception, InvalidException {
 
@@ -43,7 +43,7 @@ public class AdminAPI {
         System.out.println("Confirm Password: ");
         String c_pass = sc.next();
         if(pass.equals(c_pass)){
-            String q = "insert into admin(userID,password) values('"+email+"','"+pass+"')";
+            String q = "insert into customer(userID,password) values('"+email+"','"+pass+"')";
             int r = ConnectionUtil.insertQuery(q);
             System.out.println(r);
         }
@@ -53,7 +53,7 @@ public class AdminAPI {
     }
 
     private static boolean checkEmailExists(String email) throws Exception {
-        String q = "select * from admin where userid = '"+email+"';";
+        String q = "select * from customer where userid = '"+email+"';";
         ResultSet r = ConnectionUtil.selectQuery(q);
         if(r.next()){
             return true;
