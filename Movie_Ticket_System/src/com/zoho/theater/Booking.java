@@ -33,7 +33,7 @@ public class Booking {
         while (rs.next()){
             int shwID = rs.getInt(1);
             String name = rs.getString(2);
-            String date = rs.getString(3);
+            long date = rs.getLong(3);
             int scrNum = rs.getInt(4);
             String shwTime = rs.getString(5);
             String tname = rs.getString(6);
@@ -47,8 +47,8 @@ public class Booking {
     private static void setBooking(ArrayList<Integer> showSeatIDs,int showID) throws Exception {
         int amount = getAmount(showSeatIDs);
         Timestamp date = new Timestamp(new Date().getTime());
-        System.out.println(date);
-        String query1 = "insert into Booking(NoOfSeatsBooked,BookingDate,Amount,ShowID) values("+showSeatIDs.size()+",'"+date+"',"+amount+","+showID+")";
+        long fDate = date.getTime();
+        String query1 = "insert into Booking(NoOfSeatsBooked,BookingDate,Amount,ShowID) values("+showSeatIDs.size()+","+fDate+","+amount+","+showID+")";
         ConnectionUtil.insertQuery(query1);
         int bookingID = getLatestBookingID();
         for(Integer i:showSeatIDs){

@@ -25,7 +25,8 @@ public class Cancellation {
     }
     private static void addCancellation(int bookingID, int noOfSeats, int amount, int showID) throws Exception{
         Timestamp datetime = new Timestamp(new Date().getTime());
-        String query = "insert into Cancellation(BookingID,CancellationDate,NoOfSeatsCancelled,RefundedAmount,ShowID) values("+bookingID+",'"+ datetime +"',"+noOfSeats+","+amount+","+showID+")";
+        long fDate = datetime.getTime();
+        String query = "insert into Cancellation(BookingID,CancellationDate,NoOfSeatsCancelled,RefundedAmount,ShowID) values("+bookingID+","+fDate+","+noOfSeats+","+amount+","+showID+")";
         ConnectionUtil.insertQuery(query);
     }
     public static void cancelSeats() throws Exception {

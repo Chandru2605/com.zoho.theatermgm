@@ -29,8 +29,8 @@ public class ScreenAPI {
             ConnectionUtil.insertQuery(query);
         }
     }
-    public static boolean getScreenBookedStatus(int scrId, String date) throws Exception{
-        String q = "Select * from theater.Show where ScreenID = "+scrId+" and Date = '"+date+"' ";;
+    public static boolean getScreenBookedStatus(int scrId, long date) throws Exception{
+        String q = "Select * from theater.Show where ScreenID = "+scrId+" and Date = "+date+" ";;
         ResultSet r = ConnectionUtil.selectQuery(q);
         if(r.next()){
             return true;

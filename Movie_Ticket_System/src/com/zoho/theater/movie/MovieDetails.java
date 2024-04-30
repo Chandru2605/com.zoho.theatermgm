@@ -1,5 +1,9 @@
 package com.zoho.theater.movie;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MovieDetails {
     public int ShowID;
     public String MovieName;
@@ -8,10 +12,12 @@ public class MovieDetails {
     public String ShowTime;
     public String TheaterName;
     public String Location;
-    public MovieDetails(int shwID, String mName, String date, int scrNumber, String showTime, String tName, String location){
+    public MovieDetails(int shwID, String mName, long date, int scrNumber, String showTime, String tName, String location){
         this.ShowID = shwID;
         this.MovieName = mName;
-        this.Date = date;
+        java.util.Date dd = new Date(date);
+        DateFormat f = new SimpleDateFormat("dd-MM-yyyy");
+        this.Date = f.format(dd);
         this.ScreenNumber = scrNumber;
         this.ShowTime =showTime ;
         this.TheaterName = tName;
