@@ -5,53 +5,63 @@ import com.zoho.theater.theater.TheaterAPI;
 
 import java.sql.ResultSet;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class RevenueReport {
     static Scanner sc=  new Scanner(System.in);
     public static void revenueReportByDate(int theaterID, String date) throws Exception {
-        String q = "SELECT T.TheaterID,T.theaterName,T.location,SUM(B.NoOfSeatsBooked),DATE(B.bookingdate) AS BookingDate,SUM(B.amount) AS Amount FROM Booking B JOIN `Show` SH ON SH.showid = B.showid JOIN Screen SC ON SH.screenid = SC.screenid JOIN Theater T ON SC.theaterid = T.theaterid WHERE DATE(B.bookingdate) = '"+date+"' AND T.TheaterId = "+theaterID+" GROUP BY T.TheaterID, DATE(B.bookingdate);";
+        String q = "SELECT T.Theatername,T.location,DATE(B.Bookingdate),SUM(B.noOfSeatsBooked) AS NoOfSeatsBooked,SUM(C.noOfSeatsCancelled) AS NoOfSeatsCancelled, SUM(B.amount) AS Revenue, SUM(C.refundedAmount) AS Refund FROM Booking B JOIN `Show` SH ON B.showId = SH.showId JOIN Screen SC ON SH.screenId = SC.screenId JOIN Theater T ON SC.theaterId = T.theaterId LEFT JOIN Cancellation C ON B.bookingId = C.bookingId AND DATE(C.cancellationDate) = '"+date+"' WHERE T.theaterId = "+theaterID+" AND DATE(B.bookingDate) = '"+date+"'  GROUP BY DATE(B.Bookingdate);";
         ResultSet r = ConnectionUtil.selectQuery(q);
 
-            System.out.println("ID   Theater    Location    NoOfSeatsBooked    Date    Amount");
-            System.out.println("-------------------------------------------------------------");
+            System.out.println("Theater    Location   Date       Booked   Cancelled    Revenue    Refund");
+            System.out.println("------------------------------------------------------------------------");
             while (r.next()){
-                System.out.print(r.getInt(1)+"    ");
-                System.out.print(r.getString(2)+"        ");
+                System.out.print(r.getString(1)+"         ");
+                System.out.print(r.getString(2)+"    ");
                 System.out.print(r.getString(3)+"     ");
-                System.out.print(r.getInt(4)+"         ");
-                System.out.print(r.getString(5)+"      ");
-                System.out.println(r.getInt(6));
+                System.out.print(r.getInt(4)+"      ");
+                System.out.print(r.getInt(5)+"         ");
+                System.out.print(r.getInt(6)+"     ");
+                System.out.println(r.getInt(7));
             }
+        System.out.println("------------------------------------------------------------------------");
     }
     private static void revenueReportByShowTime(int theaterID, String date) throws Exception {
-        String q = "select T.Theatername,T.location,Date(B.BookingDate),SH.showtime,SUM(B.NoofSeatsBooked),sum(B.`amount`) from Booking B  JOIN `Show` SH ON B.showid = SH.showid JOIN Screen S ON S.ScreenID = SH.ScreenID JOIN Theater T ON T.TheaterID = S.TheaterID where T.TheaterID = "+theaterID+" and Date(B.BookingDate) = '"+date+"' group by SH.showtime,Date(B.BookingDate);";
+        String q = "SELECT T.Theatername,T.location,DATE(B.Bookingdate), SH.ShowTime,SUM(B.noOfSeatsBooked) AS NoOfSeatsBooked,SUM(C.noOfSeatsCancelled) AS NoOfSeatsCancelled, SUM(B.amount) AS Revenue, SUM(C.refundedAmount) AS Refund FROM Booking B JOIN `Show` SH ON B.showId = SH.showId JOIN Screen SC ON SH.screenId = SC.screenId JOIN Theater T ON SC.theaterId = T.theaterId LEFT JOIN Cancellation C ON B.bookingId = C.bookingId AND DATE(C.cancellationDate) = '"+date+"' WHERE T.theaterId = "+theaterID+" AND DATE(B.bookingDate) = '"+date+"'  GROUP BY SH.SHowTime,DATE(B.Bookingdate) order by SH.showtime;";
         ResultSet r = ConnectionUtil.selectQuery(q);
 
-        System.out.println("Theater    Location    Date    ShowTime    NoOfSeatsBooked    Amount");
-        System.out.println("-------------------------------------------------------------");
+        System.out.println("Theater    Location    Date    ShowTime    Booked    Cancelled    Revenue    Refund");
+        System.out.println("-----------------------------------------------------------------------------------");
         while (r.next()){
-            System.out.print(r.getString(1)+"    ");
-            System.out.print(r.getString(2)+"        ");
-            System.out.print(r.getString(3)+"     ");
-            System.out.print(r.getString(4)+"         ");
-            System.out.print(r.getInt(5)+"      ");
-            System.out.println(r.getInt(6));
+            System.out.print(r.getString(1)+"       ");
+            System.out.print(r.getString(2)+"    ");
+            System.out.print(r.getString(3)+"  ");
+            System.out.print(r.getString(4)+"      ");
+            System.out.print(r.getInt(5)+"        ");
+            System.out.print(r.getInt(6)+"        ");
+            System.out.print(r.getInt(7)+"      ");
+            System.out.println(r.getInt(8));
         }
+        System.out.println("-----------------------------------------------------------------------------------");
     }
     private static void revenueReportByScreen(int theaterID, String date) throws Exception {
-        String q = "select T.Theatername,T.location,Date(B.BookingDate),S.ScreenNumber,SUM(B.NoofSeatsBooked),sum(B.`amount`) from Booking B  JOIN `Show` SH ON B.showid = SH.showid JOIN Screen S ON S.ScreenID = SH.ScreenID JOIN Theater T ON T.TheaterID = S.TheaterID where T.TheaterID in("+theaterID+")  and Date(B.BookingDate) = '"+date+"' group by S.ScreenNumber,Date(B.BookingDate),T.TheaterID;";
+        String q = "SELECT T.Theatername,T.location,DATE(B.Bookingdate), SC.screenNumber,SUM(B.noOfSeatsBooked) AS NoOfSeatsBooked,SUM(C.noOfSeatsCancelled) AS NoOfSeatsCancelled, SUM(B.amount) AS Revenue, SUM(C.refundedAmount) AS Refund FROM Booking B JOIN `Show` SH ON B.showId = SH.showId JOIN Screen SC ON SH.screenId = SC.screenId JOIN Theater T ON SC.theaterId = T.theaterId LEFT JOIN Cancellation C ON B.bookingId = C.bookingId AND DATE(C.cancellationDate) = '"+date+"' WHERE T.theaterId = "+theaterID+" AND DATE(B.bookingDate) = '"+date+"'  GROUP BY SC.screenId, SC.screenNumber,DATE(B.Bookingdate);";
         ResultSet r = ConnectionUtil.selectQuery(q);
 
-        System.out.println("Theater    Location    Date    Screen    NoOfSeatsBooked    Amount");
-        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Theater    Location    Date    Screen    Booked    Cancelled    Revenue    Refund");
+        System.out.println("---------------------------------------------------------------------------------");
         while (r.next()){
-            System.out.print(r.getString(1)+"    ");
-            System.out.print(r.getString(2)+"        ");
-            System.out.print(r.getString(3)+"     ");
-            System.out.print(r.getInt (4)+"         ");
-            System.out.print(r.getInt(5)+"      ");
-            System.out.println(r.getInt(6));
+            System.out.print(r.getString(1)+"       ");
+            System.out.print(r.getString(2)+"    ");
+            System.out.print(r.getString(3)+"  ");
+            System.out.print(r.getInt(4)+"        ");
+            System.out.print(r.getInt(5)+"          ");
+            System.out.print(r.getInt(6)+"         ");
+            System.out.print(r.getInt(7)+"       ");
+            System.out.println(r.getInt(8));
         }
+        System.out.println("---------------------------------------------------------------------------------");
+
     }
     public static void main(String[] args) throws Exception {
         TheaterAPI.getTheaterDetails();
